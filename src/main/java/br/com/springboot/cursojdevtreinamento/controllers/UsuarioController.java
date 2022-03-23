@@ -36,8 +36,7 @@ public class UsuarioController {
 
     @DeleteMapping(value = "/delete")
     @ResponseBody
-    public ResponseEntity<String> deletar(@RequestParam Long idUser) {
-
+    public ResponseEntity<String> deletar(@RequestParam(name = "idUser", required = true) Long idUser) {
         HttpStatus httpStatusLocal = this.usuarioService.deletarUsuario(idUser);
 
        if (httpStatusLocal == HttpStatus.NOT_FOUND) {
