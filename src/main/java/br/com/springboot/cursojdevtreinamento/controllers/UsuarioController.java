@@ -2,6 +2,7 @@ package br.com.springboot.cursojdevtreinamento.controllers;
 
 import br.com.springboot.cursojdevtreinamento.model.Usuario;
 import br.com.springboot.cursojdevtreinamento.service.UsuarioService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,18 +41,18 @@ public class UsuarioController {
         HttpStatus httpStatusLocal = this.usuarioService.deletarUsuario(idUser);
 
        if (httpStatusLocal == HttpStatus.NOT_FOUND) {
-            return new ResponseEntity<String>("Não localizado!", httpStatusLocal);
+            return new ResponseEntity<String>("Não localizado! " + idUser, httpStatusLocal);
         }
        return new ResponseEntity<String>("User Deleted Successful", httpStatusLocal);
     }
 
     @GetMapping(value = "/buscarUserId")
     @ResponseBody
-    public ResponseEntity<?> buscarId(@RequestParam Long idUser) {
-        Optional<Usuario> usuarioLocal = this.usuarioService.buscarIdUsuario(idUser);
+    public ResponseEntity<?> buscarId(@RequestBody @NotNull Usuario usuario) {
+        Optional<Usuario> usuarioLocal = this.usuarioService.buscarIdUsuario(usuario.getId());
 
-        if (usuarioLocal == null) {
-            return new ResponseEntity<String>("Não localizado!", HttpStatus.NOT_FOUND);
+        if (!usuarioLocal.isPresent()) {
+            return new ResponseEntity<String>("Não localizado! " + usuario.getId(), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Optional<Usuario>>(usuarioLocal, HttpStatus.OK);
     }
@@ -62,19 +63,20 @@ public class UsuarioController {
 
         Usuario usuarioLocal = this.usuarioService.atualizarUsuario(usuario);
         if (usuarioLocal == null) {
-            return new ResponseEntity<String>("Erro ao atualizar!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("Erro ao atualizar! " + usuario.getId(), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Usuario>(usuarioLocal, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/buscarUserNome")
+    @GetMapping(value = "/buscarUserName")
     @ResponseBody
-    public ResponseEntity<?> buscarNome(@RequestParam String nameUser) {
-        List<Usuario> listaUsuarioLocal = usuarioService.buscarNomeUsuario(nameUser.trim().toUpperCase());
+    public ResponseEntity<?> buscarUserName(@RequestBody @NotNull Usuario usuario) {
 
-        if (listaUsuarioLocal == null) {
-            return new ResponseEntity<String>("Não Localizado!", HttpStatus.NOT_FOUND);
+        List<Usuario> listaUsuarioLocal = usuarioService.buscarNomeUsuario(usuario.getNome().trim().toUpperCase());
+        if (listaUsuarioLocal.isEmpty()) {
+            return new ResponseEntity<String>("Não Localizado! " + usuario.getNome(), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<List<Usuario>>(listaUsuarioLocal, HttpStatus.OK);
     }
+
 }
