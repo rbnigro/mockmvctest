@@ -5,8 +5,6 @@ import br.com.springboot.cursojdevtreinamento.service.UsuarioService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -92,19 +90,13 @@ class UsuarioControllerTest {
         RestAssured
                 .given()
                 .contentType("application/x-www-form-urlencoded; charset=utf-8")
-                .log().all()
-                .formParam("idUser", 7)
-                .log().all()
-                .when()
-                .delete("/cursojdevtreinamento/api/usuarios/delete/")
-                .then()
-                .assertThat()
-                .log().all()
-                .statusCode(HttpStatus.OK.value());
-
+                .formParam("idUser", 13)
+                .request()
+                .delete("/cursojdevtreinamento/api/usuarios/delete/");
+                // .statusCode(HttpStatus.OK.value());
     }
 
-  //  @Test
+    @Test
     void deveRetornarSucesso_QuandoBuscarIdUsuario() {
        Mockito.when(this.usuarioService.buscarIdUsuario(1L))
                 .thenReturn(Optional.ofNullable(this.usuarioLocal));

@@ -36,8 +36,10 @@ public class UsuarioService {
         return HttpStatus.OK;
     }
 
-    public Optional<Usuario> buscarIdUsuario(Long idUser) {
+    public Optional<Usuario> buscarIdUsuario(@NotNull Long idUser) {
         Optional<Usuario> usuarioLocal = usuarioRepository.findById(idUser);
+
+        System.out.println(idUser);
 
         if (!usuarioLocal.isPresent()) {
             return Optional.empty();
@@ -55,12 +57,13 @@ public class UsuarioService {
         return usuarioRetorno;
     }
 
-    public List<Usuario> buscarNomeUsuario(String nomeUsuario) {
-        List<Usuario> listaUsuarioLocal = usuarioRepository.buscarPorNome(nomeUsuario.trim().toUpperCase());
+    public List<Usuario> buscarNomeUsuario(@NotNull String nomeUsuario) {
+        List<Usuario> listaUsuarioLocal = usuarioRepository.buscarNomeUsario(nomeUsuario.trim().toUpperCase());
 
         if (listaUsuarioLocal.size() == 0) {
             return Collections.emptyList();
         }
-            return listaUsuarioLocal;
+        return listaUsuarioLocal;
     }
+
 }
