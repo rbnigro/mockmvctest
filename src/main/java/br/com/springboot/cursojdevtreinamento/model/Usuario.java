@@ -6,6 +6,7 @@ import java.io.Serializable;
 @Entity
 @SequenceGenerator(name = "seqUsuario", sequenceName = "seqUsuario", allocationSize = 1, initialValue = 1)
 public class Usuario implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -14,9 +15,7 @@ public class Usuario implements Serializable {
     private String nome;
     private int idade;
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     public void setId(Long id) {
         this.id = id;
@@ -40,6 +39,10 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "Usuario{ id=" + getId() + ", nome='" + getNome() + ", idade=" + getIdade() + '}';
+        return "Usuario {id=" + getId() + ", nome=" + getNome() + ", idade=" + getIdade() + '}';
+    }
+
+    public String toXML() {
+        return "{\"id\": " + getId() + ", \"nome\": " + "\"" + getNome() + "\"" + ", \"idade" + "\": " + getIdade() + '}';
     }
 }

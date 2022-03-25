@@ -5,6 +5,7 @@ import br.com.springboot.cursojdevtreinamento.service.UsuarioService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,6 +16,8 @@ import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.Optional;
+
+import static org.hamcrest.Matchers.equalTo;
 
 // import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 // import static org.mockito.Mockito.when;
@@ -38,7 +41,6 @@ class UsuarioControllerTest {
         this.usuarioLocal.setIdade(50);
 
         RestAssuredMockMvc.standaloneSetup(this.usuarioController);
-
     }
 
     @Test
@@ -52,9 +54,11 @@ class UsuarioControllerTest {
 
         RestAssuredMockMvc.given()
                 .accept(ContentType.JSON)
+                .log().all()
                 .when()
                 .get("/api/usuarios/listaTodos")
                 .then()
+                .log().all()
                 .statusCode(HttpStatus.OK.value());
     }
 
@@ -68,44 +72,106 @@ class UsuarioControllerTest {
                 .when()
                 .get("/api/usuarios/listaTodos")
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
-    void deveRetornarScuesso_QuandoCriarUsuario() {
+    void deveRetornarSucesso_QuandoCriarUsuario() {
+        // TODO aqui
+        JSONObject json1 = new JSONObject();
+        json1.put("nome", usuarioLocal.getNome());
+        json1.put("idade", usuarioLocal.getIdade());
+
+        RestAssuredMockMvc
+                .given()
+                .header("Content-Type", "application/json")
+                //.accept(ContentType.JSON)
+                .contentType("application/json")
+                .body(json1.toString())
+                .when()
+                .post("/api/usuarios/salvar")
+                .then()
+                .assertThat().body("message", equalTo("Message accepted"));
+                // .statusCode(HttpStatus.CREATED.value());
+
+    }
+
+    @Test
+    void deveRetornarErro_QuandoCriarUsuario() {
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .log().all()
-                .body("{\"nome\": \"Ronney\",\"idade\": 14}")
+                .body("{\"cpf\": \"159.100.978-22\",  \"nome\": \"Ronney\",\"idade\": 14}")
                 .when()
                 .post("/api/usuarios/salvar")
                 .then()
                 .assertThat()
                 .log().all()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
-    void deveRetonarScuesso_QuandoApagarUsuario() {
+    void deveRetonarSucesso_QuandoApagarUsuario() {
+           Mockito.when(this.usuarioService.buscarIdUsuario(1L))
+                 .thenReturn(Optional.ofNullable(this.usuarioLocal));
+
         RestAssured
                 .given()
                 .contentType("application/x-www-form-urlencoded; charset=utf-8")
-                .formParam("idUser", 13)
-                .request()
-                .delete("/cursojdevtreinamento/api/usuarios/delete/");
-                // .statusCode(HttpStatus.OK.value());
+                .formParam("id", 18) //this.usuarioLocal.getId())
+                .when()
+                .delete("/cursojdevtreinamento/api/usuarios/apagar")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void deveRetonarErro_QuandoApagarUsuario() {
+        Mockito.when(this.usuarioService.buscarIdUsuario(1L))
+                .thenReturn(Optional.ofNullable(this.usuarioLocal));
+
+        RestAssured
+                .given()
+                .accept(ContentType.JSON)
+                .contentType("application/x-www-form-urlencoded; charset=utf-8")
+                .formParam("id", this.usuarioLocal.getId())
+                .log().all()
+                .delete("/cursojdevtreinamento/api/usuarios/apagar/")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
     void deveRetornarSucesso_QuandoBuscarIdUsuario() {
-       Mockito.when(this.usuarioService.buscarIdUsuario(1L))
+       Mockito.when(this.usuarioService.buscarIdUsuario(14L))
                 .thenReturn(Optional.ofNullable(this.usuarioLocal));
 
         RestAssuredMockMvc.given()
-                .contentType("multipart/form-data")
-                .multiPart("idUser", 1L)
+                .contentType("application/json")
+                .log().all()
+                .body("{\"id\": 14}")
                 .when()
-                .get("/api/usuarios/buscarUserId");
+                .get("/api/usuarios/buscarUserId")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    void deveRetornarErro_QuandoBuscarIdUsuario() {
+        Mockito.when(this.usuarioService.buscarIdUsuario(14L))
+                .thenReturn(Optional.ofNullable(this.usuarioLocal));
+
+        RestAssuredMockMvc.given()
+                .contentType("application/json")
+                .log().all()
+                .body("{\"id\": 1}")
+                .when()
+                .get("/api/usuarios/buscarUserId")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
 }

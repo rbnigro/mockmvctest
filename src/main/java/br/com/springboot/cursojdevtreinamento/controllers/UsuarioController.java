@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,28 +24,34 @@ public class UsuarioController {
     public ResponseEntity<List<Usuario>> listar() {
         List<Usuario> usuariosLocal = this.usuarioService.listarUsuarios();
 
-        if(usuariosLocal == null) {
-            return ResponseEntity.notFound().build();
+        if (usuariosLocal == null) {
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(usuariosLocal);
     }
 
     @PostMapping(value = "/salvar")
     @ResponseBody
-    public ResponseEntity<Usuario> salvar(@RequestBody Usuario usuario) {
-      Usuario usuarioLocal = this.usuarioService.salvarUsuario(usuario);
-      return new ResponseEntity<Usuario>(usuarioLocal, HttpStatus.CREATED);
+    public ResponseEntity<?> salvar(@RequestBody @NotNull Usuario usuario) throws IOException {
+        //TODO AQUI
+
+        Usuario usuarioLocal = this.usuarioService.salvarUsuario(usuario);
+        if (!this.usuarioService.validarInputJson(usuarioLocal)) {
+            return new ResponseEntity<String>("Erro ao gravar: " + usuarioLocal, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<Usuario>(usuarioLocal, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/apagar")
     @ResponseBody
-    public ResponseEntity<String> deletar(@RequestParam(name = "idUser", required = true) Long idUser) {
-        HttpStatus httpStatusLocal = this.usuarioService.deletarUsuario(idUser);
+    public ResponseEntity<String> deletar(@RequestParam(name = "id", required = true) Long id) {
+        HttpStatus httpStatusLocal = this.usuarioService.deletarUsuario(id);
 
-       if (httpStatusLocal == HttpStatus.NOT_FOUND) {
-            return new ResponseEntity<String>("Não localizado! " + idUser, httpStatusLocal);
+        if (httpStatusLocal == HttpStatus.NO_CONTENT) {
+            return new ResponseEntity<String>("Não localizado para apagar! " + id, httpStatusLocal);
         }
-       return new ResponseEntity<String>("User Deleted Successful", httpStatusLocal);
+        return new ResponseEntity<String>("User Deleted Successful", httpStatusLocal);
     }
 
     @GetMapping(value = "/buscarUserId")
@@ -63,7 +71,7 @@ public class UsuarioController {
 
         Usuario usuarioLocal = this.usuarioService.atualizarUsuario(usuario);
         if (usuarioLocal == null) {
-            return new ResponseEntity<String>("Erro ao atualizar! " + usuario.getId(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("Erro ao atualizar! " + usuario.getId(), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<Usuario>(usuarioLocal, HttpStatus.OK);
     }
@@ -74,7 +82,7 @@ public class UsuarioController {
 
         List<Usuario> listaUsuarioLocal = usuarioService.buscarNomeUsuario(usuario.getNome().trim().toUpperCase());
         if (listaUsuarioLocal.isEmpty()) {
-            return new ResponseEntity<String>("Não Localizado! " + usuario.getNome(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("Não Localizado! " + usuario.getNome(), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<List<Usuario>>(listaUsuarioLocal, HttpStatus.OK);
     }
