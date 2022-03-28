@@ -35,12 +35,12 @@ public class UsuarioController {
     public ResponseEntity<?> salvar(@RequestBody @NotNull Usuario usuario) throws IOException {
         //TODO AQUI
 
-        Usuario usuarioLocal = this.usuarioService.salvarUsuario(usuario);
-        if (!this.usuarioService.validarInputJson(usuarioLocal)) {
-            return new ResponseEntity<String>("Erro ao gravar: " + usuarioLocal, HttpStatus.BAD_REQUEST);
+        if (this.usuarioService.validarInputJson(usuario)) {
+            Usuario usuarioSalvar = usuarioSalvar = this.usuarioService.salvarUsuario(usuario);
+            return new ResponseEntity<Usuario>(usuarioSalvar, HttpStatus.CREATED);
         }
+        return new ResponseEntity<String>("Erro ao gravar: " + usuario, HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<Usuario>(usuarioLocal, HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/apagar")
