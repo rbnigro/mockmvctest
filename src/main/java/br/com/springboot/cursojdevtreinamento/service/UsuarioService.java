@@ -1,5 +1,6 @@
 package br.com.springboot.cursojdevtreinamento.service;
 
+import br.com.springboot.cursojdevtreinamento.dto.UsuarioDTO;
 import br.com.springboot.cursojdevtreinamento.model.UsuarioModel;
 import br.com.springboot.cursojdevtreinamento.repository.UsuarioRepository;
 import org.jetbrains.annotations.NotNull;
@@ -27,14 +28,7 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioModel salvarUsuario(UsuarioModel usuarioModel) {
-        UsuarioModel usuarioModelRetorno = null;
-
-        try {
-            usuarioModelRetorno = usuarioRepository.save(usuarioModel);
-        } catch(Exception e) {
-            System.out.println(e.toString());
-        }
-        return usuarioModelRetorno;
+        return usuarioRepository.save(usuarioModel);
     }
 
     @Transactional
@@ -69,7 +63,7 @@ public class UsuarioService {
     }
 
     public List<UsuarioModel> buscarNomeUsuario(@NotNull String nomeUsuario) {
-        List<UsuarioModel> listaUsuarioLocalModel = usuarioRepository.buscarNomeUsario(nomeUsuario.trim().toUpperCase());
+        List<UsuarioModel> listaUsuarioLocalModel = usuarioRepository.buscarNomeUsuario(nomeUsuario.trim().toUpperCase());
 
         if (listaUsuarioLocalModel.size() == 0) {
             return Collections.emptyList();
@@ -77,9 +71,18 @@ public class UsuarioService {
         return listaUsuarioLocalModel;
     }
 
-    @Transactional
     public boolean validarInputJson(@NotNull UsuarioModel usuarioModel) {
         // TODO preprar para remover com valid
         return  (usuarioModel.getNome() != null && usuarioModel.getIdade() != 0);
     }
+
+    public boolean validarInputJson(@NotNull UsuarioDTO usuarioDTO) {
+        // TODO preprar para remover com valid
+        return  (usuarioDTO.getNome() != null && usuarioDTO.getIdade() != 0);
+    }
+
+    public boolean existsByNome(String nome) {
+        return usuarioRepository.existsByNome(nome);
+    }
+
 }

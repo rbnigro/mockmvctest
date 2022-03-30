@@ -11,6 +11,7 @@ import java.util.List;
 public interface UsuarioRepository extends JpaRepository<UsuarioModel, Long> {
 
     @Query(value = "select u from UsuarioModel u where upper(trim(u.nome)) like %?1%")
-    List<UsuarioModel> buscarNomeUsario(String name);
+    List<UsuarioModel> buscarNomeUsuario(String name);
 
+    boolean existsByNome(String nome);
 }

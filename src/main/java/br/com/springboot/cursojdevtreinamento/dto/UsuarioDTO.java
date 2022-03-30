@@ -1,15 +1,14 @@
 package br.com.springboot.cursojdevtreinamento.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 
 public class UsuarioDTO {
 
     @NotBlank
     private String nome;
 
-    @NotBlank
-    @Size(max = 2)
+    @NotNull
     private int idade;
 
     public String getNome() {

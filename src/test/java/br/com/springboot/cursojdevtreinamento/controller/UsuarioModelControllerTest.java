@@ -93,7 +93,7 @@ class UsuarioModelControllerTest {
     void deveRetornarSucesso_QuandoCriarUsuario() throws Exception {
 
         Mockito.when(usuarioService.salvarUsuario(ArgumentMatchers.any())).thenReturn(this.usuarioModelLocal);
-        Mockito.when(usuarioService.validarInputJson(ArgumentMatchers.any())).thenReturn(true);
+      //  Mockito.when(usuarioService.validarInputJson(ArgumentMatchers.any())).thenReturn(true);
 
         String json = mapper.writeValueAsString(this.usuarioModelLocal);
         mockMvc.perform(post("/api/usuarios/salvar").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")

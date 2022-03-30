@@ -24,20 +24,21 @@ public class MercadoriaController {
         this.mercadoriaService = mercadoriaService;
     }
 
+    @GetMapping(value = "/listaTodos")
+    // TODO testar com retorno vazio
+    public ResponseEntity<List<MercadoriaModel>> getAllMercadoria() {
+        return ResponseEntity.status(HttpStatus.OK).body(mercadoriaService.findAll());
+    }
+
     @PostMapping(value = "/salvar")
-    public ResponseEntity<Object>  salvarMercadoria(@RequestBody @Valid MercadoriaDTO mercadoriaDTO) throws Exception {
+    public ResponseEntity<Object>  salvarMercadoria(@RequestBody @Valid @NotNull MercadoriaDTO mercadoriaDTO) throws Exception {
         if (mercadoriaService.existsByDescricao(mercadoriaDTO.getDescricao())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito descrição já existente: " + mercadoriaDTO.getDescricao());
         }
 
         var mercadoriaModel = new MercadoriaModel();
         BeanUtils.copyProperties(mercadoriaDTO, mercadoriaModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mercadoriaService.save(mercadoriaModel));
-    }
-
-    @GetMapping(value = "/listaTodos")
-    public ResponseEntity<List<MercadoriaModel>> getAllMercadoria() {
-        return ResponseEntity.status(HttpStatus.OK).body(mercadoriaService.findAll());
+        return ResponseEntity.status(HttpStatus.CREATED).body(mercadoriaService.salvarMercadoria(mercadoriaModel));
     }
 
     @GetMapping(value = "/buscarMercadoriaId")

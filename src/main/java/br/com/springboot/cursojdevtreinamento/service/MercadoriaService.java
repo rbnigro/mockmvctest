@@ -2,7 +2,6 @@ package br.com.springboot.cursojdevtreinamento.service;
 
 import br.com.springboot.cursojdevtreinamento.model.MercadoriaModel;
 import br.com.springboot.cursojdevtreinamento.repository.MercadoriaRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,7 +18,7 @@ public class MercadoriaService {
     }
 
     @Transactional
-    public MercadoriaModel save(MercadoriaModel mercadoriaModel) {
+    public MercadoriaModel salvarMercadoria(MercadoriaModel mercadoriaModel) {
         return mercadoriaRepository.save(mercadoriaModel);
     }
 

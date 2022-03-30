@@ -1,9 +1,10 @@
 package br.com.springboot.cursojdevtreinamento.controller;
 
+import br.com.springboot.cursojdevtreinamento.dto.UsuarioDTO;
 import br.com.springboot.cursojdevtreinamento.model.UsuarioModel;
 import br.com.springboot.cursojdevtreinamento.service.UsuarioService;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,11 @@ import java.util.Optional;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     @GetMapping(value = "/listaTodos")
     @ResponseBody
@@ -34,15 +38,18 @@ public class UsuarioController {
 
     @PostMapping(value = "/salvar")
     @ResponseBody
-    public ResponseEntity<?> salvarUsuario(@RequestBody @Valid UsuarioModel usuarioModel) throws IOException {
-        //TODO AQUI
+    public ResponseEntity<Object> salvarUsuario(@RequestBody @Valid @NotNull UsuarioDTO usuarioDTO) {
 
-        if (this.usuarioService.validarInputJson(usuarioModel)) {
-            UsuarioModel usuarioModelSalvar = usuarioModelSalvar = this.usuarioService.salvarUsuario(usuarioModel);
-            return new ResponseEntity<UsuarioModel>(usuarioModelSalvar, HttpStatus.CREATED);
+        if (usuarioService.existsByNome(usuarioDTO.getNome())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito nome já existente: " + usuarioDTO.getNome());
         }
-        return new ResponseEntity<String>("Erro ao gravar: " + usuarioModel, HttpStatus.BAD_REQUEST);
 
+        if (!this.usuarioService.validarInputJson(usuarioDTO)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao gravar: " + usuarioDTO);
+        }
+            var usuarioModel = new UsuarioModel();
+            BeanUtils.copyProperties(usuarioDTO, usuarioModel);
+            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.salvarUsuario(usuarioModel));
     }
 
     @DeleteMapping(value = "/apagar")
