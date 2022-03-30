@@ -1,9 +1,9 @@
-package br.com.springboot.cursojdevtreinamento.controllers;
+package br.com.springboot.cursojdevtreinamento.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import br.com.springboot.cursojdevtreinamento.model.Usuario;
+import br.com.springboot.cursojdevtreinamento.model.UsuarioModel;
 import br.com.springboot.cursojdevtreinamento.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
@@ -30,7 +30,7 @@ import java.util.Optional;
 // import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = UsuarioController.class)
-class UsuarioControllerTest {
+class UsuarioModelControllerTest {
 
     @Autowired
     private UsuarioController usuarioController;
@@ -45,14 +45,14 @@ class UsuarioControllerTest {
 
     // nao tinha mada
     @Mock
-    private Usuario usuarioLocal;
+    private UsuarioModel usuarioModelLocal;
 
     @BeforeEach
     public void setup() { // antes de cada teste
-        this.usuarioLocal = new Usuario();
-        this.usuarioLocal.setId(1L);
-        this.usuarioLocal.setNome("Sussu");
-        this.usuarioLocal.setIdade(50);
+        this.usuarioModelLocal = new UsuarioModel();
+        this.usuarioModelLocal.setIdUsuario(1L);
+        this.usuarioModelLocal.setNome("Sussu");
+        this.usuarioModelLocal.setIdade(50);
 
         RestAssuredMockMvc.standaloneSetup(this.usuarioController);
     }
@@ -60,11 +60,11 @@ class UsuarioControllerTest {
     @Test
     void deveRetornarSucesso_QuandoBuscarListaUsuario() {
 
-        ArrayList<Usuario> listUsuario = new ArrayList<>();
-        listUsuario.add(this.usuarioLocal);
+        ArrayList<UsuarioModel> listUsuarioModel = new ArrayList<>();
+        listUsuarioModel.add(this.usuarioModelLocal);
 
         Mockito.when(this.usuarioService.listarUsuarios())
-                .thenReturn(listUsuario);
+                .thenReturn(listUsuarioModel);
 
         RestAssuredMockMvc.given()
                 .accept(ContentType.JSON)
@@ -92,25 +92,25 @@ class UsuarioControllerTest {
     @Test
     void deveRetornarSucesso_QuandoCriarUsuario() throws Exception {
 
-        Mockito.when(usuarioService.salvarUsuario(ArgumentMatchers.any())).thenReturn(this.usuarioLocal);
+        Mockito.when(usuarioService.salvarUsuario(ArgumentMatchers.any())).thenReturn(this.usuarioModelLocal);
         Mockito.when(usuarioService.validarInputJson(ArgumentMatchers.any())).thenReturn(true);
 
-        String json = mapper.writeValueAsString(this.usuarioLocal);
+        String json = mapper.writeValueAsString(this.usuarioModelLocal);
         mockMvc.perform(post("/api/usuarios/salvar").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
                         .content(json).accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-                //  .andExpect(jsonPath("$.id", Matchers.equalTo(this.usuarioLocal.getId())))
-                .andExpect(jsonPath("$.nome", Matchers.equalTo(this.usuarioLocal.getNome())))
-                .andExpect(jsonPath("$.idade", Matchers.equalTo(this.usuarioLocal.getIdade())));
+                //  .andExpect(jsonPath("$.id", Matchers.equalTo(this.usuarioModelLocal.getId())))
+                .andExpect(jsonPath("$.nome", Matchers.equalTo(this.usuarioModelLocal.getNome())))
+                .andExpect(jsonPath("$.idade", Matchers.equalTo(this.usuarioModelLocal.getIdade())));
     }
 
     @Test
     void deveRetornarSucesso_QuandoCriarUsuarioTWO() throws Exception {
-        Mockito.when(this.usuarioService.salvarUsuario(this.usuarioLocal)).thenReturn(this.usuarioLocal);
-        Mockito.when(this.usuarioService.validarInputJson(this.usuarioLocal)).thenReturn(true);
+        Mockito.when(this.usuarioService.salvarUsuario(this.usuarioModelLocal)).thenReturn(this.usuarioModelLocal);
+        Mockito.when(this.usuarioService.validarInputJson(this.usuarioModelLocal)).thenReturn(true);
 
         JSONObject json1 = new JSONObject();
-        json1.put("nome", this.usuarioLocal.getNome());
-        json1.put("idade", this.usuarioLocal.getIdade());
+        json1.put("nome", this.usuarioModelLocal.getNome());
+        json1.put("idade", this.usuarioModelLocal.getIdade());
 
         RestAssuredMockMvc
                 .given()
@@ -142,12 +142,12 @@ class UsuarioControllerTest {
 
     @Test
     void deveRetonarSucesso_QuandoApagarUsuario() {
-        Mockito.when(this.usuarioService.buscarIdUsuario(1L)).thenReturn(Optional.ofNullable(this.usuarioLocal));
+        Mockito.when(this.usuarioService.buscarIdUsuario(1L)).thenReturn(Optional.ofNullable(this.usuarioModelLocal));
 
         RestAssured
                 .given()
                 .contentType("application/x-www-form-urlencoded; charset=utf-8")
-                .formParam("id", 18) //this.usuarioLocal.getId())
+                .formParam("id", 18) //this.usuarioModelLocal.getId())
                 .when()
                 .delete("/cursojdevtreinamento/api/usuarios/apagar");
               //  .then()
@@ -158,13 +158,13 @@ class UsuarioControllerTest {
     @Test
     void deveRetonarErro_QuandoApagarUsuario() {
         Mockito.when(this.usuarioService.buscarIdUsuario(1L))
-                .thenReturn(Optional.ofNullable(this.usuarioLocal));
+                .thenReturn(Optional.ofNullable(this.usuarioModelLocal));
 
         RestAssured
                 .given()
                 .accept(ContentType.JSON)
                 .contentType("application/x-www-form-urlencoded; charset=utf-8")
-                .formParam("id", this.usuarioLocal.getId())
+                .formParam("id", this.usuarioModelLocal.getIdUsuario())
                 .log().all()
                 .delete("/cursojdevtreinamento/api/usuarios/apagar/")
                 .then()
@@ -175,7 +175,7 @@ class UsuarioControllerTest {
     @Test
     void deveRetornarSucesso_QuandoBuscarIdUsuario() {
         Mockito.when(this.usuarioService.buscarIdUsuario(14L))
-                .thenReturn(Optional.ofNullable(this.usuarioLocal));
+                .thenReturn(Optional.ofNullable(this.usuarioModelLocal));
 
         RestAssuredMockMvc.given()
                 .contentType("application/json")
@@ -190,7 +190,7 @@ class UsuarioControllerTest {
     @Test
     void deveRetornarErro_QuandoBuscarIdUsuario() {
         Mockito.when(this.usuarioService.buscarIdUsuario(14L))
-                .thenReturn(Optional.ofNullable(this.usuarioLocal));
+                .thenReturn(Optional.ofNullable(this.usuarioModelLocal));
 
         RestAssuredMockMvc.given()
                 .contentType("application/json")

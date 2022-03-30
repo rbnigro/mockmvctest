@@ -1,24 +1,33 @@
 package br.com.springboot.cursojdevtreinamento.model;
 
+import org.jetbrains.annotations.Nullable;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Table(name = "usuario")
 @SequenceGenerator(name = "seqUsuario", sequenceName = "seqUsuario", allocationSize = 1, initialValue = 1)
-public class Usuario implements Serializable {
+public class UsuarioModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqUsuario")
-    private Long id;
+    private Long idUsuario;
+
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false)
     private int idade;
 
-    public Long getId() { return id; }
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getNome() {
@@ -39,10 +48,10 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "Usuario {id=" + getId() + ", nome=" + getNome() + ", idade=" + getIdade() + '}';
+        return "UsuarioModel {id=" + getIdUsuario() + ", nome=" + getNome() + ", idade=" + getIdade() + '}';
     }
 
     public String toXML() {
-        return "{\"id\": " + getId() + ", \"nome\": " + "\"" + getNome() + "\"" + ", \"idade" + "\": " + getIdade() + '}';
+        return "{\"idUsuario\": " + getIdUsuario() + ", \"nome\": " + "\"" + getNome() + "\"" + ", \"idade" + "\": " + getIdade() + '}';
     }
 }

@@ -1,12 +1,12 @@
 package br.com.springboot.cursojdevtreinamento.service;
 
-import br.com.springboot.cursojdevtreinamento.model.Usuario;
+import br.com.springboot.cursojdevtreinamento.model.UsuarioModel;
 import br.com.springboot.cursojdevtreinamento.repository.UsuarioRepository;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -14,27 +14,32 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    UsuarioRepository usuarioRepository;
+    final UsuarioRepository usuarioRepository;
 
-    public List<Usuario> listarUsuarios() {
-        List<Usuario> usuariosLocal = usuarioRepository.findAll();
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    public List<UsuarioModel> listarUsuarios() {
+        List<UsuarioModel> usuariosLocal = usuarioRepository.findAll();
         return usuariosLocal;
     }
 
-    public Usuario salvarUsuario(Usuario usuario) {
-        Usuario usuarioRetorno = null;
+    @Transactional
+    public UsuarioModel salvarUsuario(UsuarioModel usuarioModel) {
+        UsuarioModel usuarioModelRetorno = null;
 
         try {
-            usuarioRetorno = usuarioRepository.save(usuario);
+            usuarioModelRetorno = usuarioRepository.save(usuarioModel);
         } catch(Exception e) {
             System.out.println(e.toString());
         }
-        return usuarioRetorno;
+        return usuarioModelRetorno;
     }
 
+    @Transactional
     public HttpStatus deletarUsuario(Long idUser) {
-        Optional<Usuario> usuarioLocal = usuarioRepository.findById(idUser);
+        Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(idUser);
 
         if (!usuarioLocal.isPresent()) {
             return HttpStatus.NO_CONTENT;
@@ -43,8 +48,8 @@ public class UsuarioService {
         return HttpStatus.OK;
     }
 
-    public Optional<Usuario> buscarIdUsuario(@NotNull Long idUser) {
-        Optional<Usuario> usuarioLocal = usuarioRepository.findById(idUser);
+    public Optional<UsuarioModel> buscarIdUsuario(@NotNull Long idUser) {
+        Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(idUser);
 
         if (!usuarioLocal.isPresent()) {
             return Optional.empty();
@@ -52,26 +57,29 @@ public class UsuarioService {
         return usuarioLocal;
     }
 
-    public Usuario atualizarUsuario(@NotNull Usuario usuario) {
-        Optional<Usuario> usuarioLocal = usuarioRepository.findById(usuario.getId());
+    @Transactional
+    public UsuarioModel atualizarUsuario(@NotNull UsuarioModel usuarioModel) {
+        Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(usuarioModel.getIdUsuario());
 
-        if ((usuario.getId() == null) || (!usuarioLocal.isPresent())) {
+        if ((usuarioModel.getIdUsuario() == null) || (!usuarioLocal.isPresent())) {
             return null;
         }
-        Usuario usuarioRetorno = usuarioRepository.saveAndFlush(usuario);
-        return usuarioRetorno;
+        UsuarioModel usuarioModelRetorno = usuarioRepository.saveAndFlush(usuarioModel);
+        return usuarioModelRetorno;
     }
 
-    public List<Usuario> buscarNomeUsuario(@NotNull String nomeUsuario) {
-        List<Usuario> listaUsuarioLocal = usuarioRepository.buscarNomeUsario(nomeUsuario.trim().toUpperCase());
+    public List<UsuarioModel> buscarNomeUsuario(@NotNull String nomeUsuario) {
+        List<UsuarioModel> listaUsuarioLocalModel = usuarioRepository.buscarNomeUsario(nomeUsuario.trim().toUpperCase());
 
-        if (listaUsuarioLocal.size() == 0) {
+        if (listaUsuarioLocalModel.size() == 0) {
             return Collections.emptyList();
         }
-        return listaUsuarioLocal;
+        return listaUsuarioLocalModel;
     }
 
-    public boolean validarInputJson(@NotNull Usuario usuario) {
-        return  (usuario.getNome() != null && usuario.getIdade() != 0);
+    @Transactional
+    public boolean validarInputJson(@NotNull UsuarioModel usuarioModel) {
+        // TODO preprar para remover com valid
+        return  (usuarioModel.getNome() != null && usuarioModel.getIdade() != 0);
     }
 }
