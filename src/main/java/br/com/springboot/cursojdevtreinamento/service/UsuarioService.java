@@ -38,18 +38,18 @@ public class UsuarioService {
     }
 
     @Transactional
-    public HttpStatus deletarUsuario(Long idUser) {
-        Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(idUser);
+    public HttpStatus deletarUsuario(Long idUsuario) {
+        Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(idUsuario);
 
         if (!usuarioLocal.isPresent()) {
             return HttpStatus.NO_CONTENT;
         }
-        usuarioRepository.deleteById(idUser);
+        usuarioRepository.deleteById(idUsuario);
         return HttpStatus.OK;
     }
 
-    public Optional<UsuarioModel> buscarIdUsuario(@NotNull Long idUser) {
-        Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(idUser);
+    public Optional<UsuarioModel> buscarIdUsuario(@NotNull Long idUsuario) {
+        Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(idUsuario);
 
         if (!usuarioLocal.isPresent()) {
             return Optional.empty();

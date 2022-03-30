@@ -47,7 +47,7 @@ public class UsuarioController {
 
     @DeleteMapping(value = "/apagar")
     @ResponseBody
-    public ResponseEntity<String> deletar(@RequestParam(name = "id", required = true) Long id) {
+    public ResponseEntity<String> apagar(@RequestParam(name = "id", required = true) Long id) {
         HttpStatus httpStatusLocal = this.usuarioService.deletarUsuario(id);
 
         if (httpStatusLocal == HttpStatus.NO_CONTENT) {
@@ -56,15 +56,15 @@ public class UsuarioController {
         return new ResponseEntity<String>("User Deleted Successful", httpStatusLocal);
     }
 
-    @GetMapping(value = "/buscarUserId")
+    @GetMapping(value = "/buscarUsuarioId")
     @ResponseBody
-    public ResponseEntity<?> buscarId(@RequestBody @NotNull UsuarioModel usuarioModel) {
+    public ResponseEntity<Object> buscarUsuarioId(@RequestBody @Valid UsuarioModel usuarioModel) {
         Optional<UsuarioModel> usuarioLocal = this.usuarioService.buscarIdUsuario(usuarioModel.getIdUsuario());
 
         if (!usuarioLocal.isPresent()) {
-            return new ResponseEntity<String>("Não localizado! " + usuarioModel.getIdUsuario(), HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não localizado! " + usuarioModel.getIdUsuario());
         }
-        return new ResponseEntity<Optional<UsuarioModel>>(usuarioLocal, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioLocal.get());
     }
 
     @PutMapping(value = "/atualizar")

@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MercadoriaRepository extends JpaRepository<MercadoriaModel, Long> {
+
+    boolean existsByDescricao(String descricao);
 }
