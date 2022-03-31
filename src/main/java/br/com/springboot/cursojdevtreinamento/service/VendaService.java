@@ -17,6 +17,9 @@ public class VendaService {
 
     @Transactional
     public VendaModel salvar(VendaModel vendaModel) {
+
+        //TODO implemtar logger
+        //TODO implementar swagger
         return vendaRepository.save(vendaModel);
     }
 }

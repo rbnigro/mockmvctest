@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -29,12 +28,12 @@ public class MercadoriaController {
     }
 
     @GetMapping(value = "/listaTodos")
-    public ResponseEntity<Page<MercadoriaModel>> getAllMercadoria(@PageableDefault(page = 0, size = 10, sort = "descricao", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<Page<MercadoriaModel>> getAll(@PageableDefault(page = 0, size = 10, sort = "descricao", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(mercadoriaService.findAll(pageable));
     }
 
     @PostMapping(value = "/salvar")
-    public ResponseEntity<Object>  salvar(@RequestBody @Valid @NotNull MercadoriaDTO mercadoriaDTO) throws Exception {
+    public ResponseEntity<Object>  salvar(@RequestBody @Valid @NotNull MercadoriaDTO mercadoriaDTO) {
         if (mercadoriaService.existsByDescricao(mercadoriaDTO.getDescricao())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito descrição já existente: " + mercadoriaDTO.getDescricao());
         }
@@ -49,14 +48,14 @@ public class MercadoriaController {
     public ResponseEntity<Object> buscarId(@RequestBody @NotNull MercadoriaModel mercadoriaModel) {
         Optional<MercadoriaModel> mercadoriaLocal = this.mercadoriaService.findById(mercadoriaModel.getIdMercadoria());
 
-        if (!mercadoriaLocal.isPresent()) {
+        if (!mercadoriaLocal.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não localizado! " + mercadoriaModel.getIdMercadoria());
         }
         return ResponseEntity.status(HttpStatus.OK).body(mercadoriaLocal.get());
     }
 
     @DeleteMapping(value = "/apagar")
-    public ResponseEntity<Object> apagar(@RequestParam(name = "id", required = true) Long id) {
+    public ResponseEntity<Object> apagar(@RequestParam(name = "id") Long id) {
         HttpStatus httpStatusLocal = this.mercadoriaService.apagar(id);
 
         if (httpStatusLocal == HttpStatus.NO_CONTENT) { // NO_CONTENT -> Cancela o Body
