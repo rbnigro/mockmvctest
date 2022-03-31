@@ -34,27 +34,22 @@ public class UsuarioService {
     public HttpStatus apagar(Long id) {
         Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(id);
 
-        if (!usuarioLocal.isPresent()) {
+        if (!usuarioLocal.isEmpty()) {
             return HttpStatus.NO_CONTENT;
         }
         usuarioRepository.deleteById(id);
         return HttpStatus.OK;
     }
 
-    public Optional<UsuarioModel> buscarIdUsuario(@NotNull Long idUsuario) {
-        Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(idUsuario);
-
-        if (!usuarioLocal.isPresent()) {
-            return Optional.empty();
-        }
-        return usuarioLocal;
+    public Optional<UsuarioModel> buscarId(@NotNull Long idUsuario) {
+       return usuarioRepository.findById(idUsuario);
     }
 
     @Transactional
-    public UsuarioModel atualizarUsuario(@NotNull UsuarioModel usuarioModel) {
+    public UsuarioModel atualizar(@NotNull UsuarioModel usuarioModel) {
         Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(usuarioModel.getIdUsuario());
 
-        if ((usuarioModel.getIdUsuario() == null) || (!usuarioLocal.isPresent())) {
+        if ((usuarioModel.getIdUsuario() == null) || (!usuarioLocal.isEmpty())) {
             return null;
         }
         return usuarioRepository.saveAndFlush(usuarioModel);

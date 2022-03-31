@@ -46,28 +46,29 @@ public class UsuarioController {
         if (!this.usuarioService.validarInputJson(usuarioDTO)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao gravar: " + usuarioDTO);
         }
-            var usuarioModel = new UsuarioModel();
-            BeanUtils.copyProperties(usuarioDTO, usuarioModel);
-            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.salvar(usuarioModel));
+
+        var usuarioModel = new UsuarioModel();
+        BeanUtils.copyProperties(usuarioDTO, usuarioModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.salvar(usuarioModel));
     }
 
     @DeleteMapping(value = "/apagar")
     @ResponseBody
-    public ResponseEntity<String> apagar(@RequestParam(name = "id", required = true) Long id) {
+    public ResponseEntity<Object> apagar(@RequestParam(name = "id", required = true) Long id) {
         HttpStatus httpStatusLocal = this.usuarioService.apagar(id);
 
-        if (httpStatusLocal == HttpStatus.NO_CONTENT) {
-            return new ResponseEntity<String>("Não localizado para apagar! " + id, httpStatusLocal);
+        if (httpStatusLocal == HttpStatus.NO_CONTENT) { // anula o body
+            return ResponseEntity.status(httpStatusLocal).body("Não localizado para apagar! " + id);
         }
-        return new ResponseEntity<String>("Apagado com Sucesso", httpStatusLocal);
+        return ResponseEntity.status(httpStatusLocal).body("Apagado com Sucesso");
     }
 
     @GetMapping(value = "/buscarId")
     @ResponseBody
     public ResponseEntity<Object> buscarId(@RequestBody @Valid UsuarioModel usuarioModel) {
-        Optional<UsuarioModel> usuarioLocal = this.usuarioService.buscarIdUsuario(usuarioModel.getIdUsuario());
+        Optional<UsuarioModel> usuarioLocal = this.usuarioService.buscarId(usuarioModel.getIdUsuario());
 
-        if (!usuarioLocal.isPresent()) {
+        if (!usuarioLocal.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não localizado! " + usuarioModel.getIdUsuario());
         }
         return ResponseEntity.status(HttpStatus.OK).body(usuarioLocal.get());
@@ -77,22 +78,22 @@ public class UsuarioController {
     @ResponseBody
     public ResponseEntity<Object> atualizar(@RequestBody UsuarioModel usuarioModel) {
 
-        UsuarioModel usuarioModelLocal = this.usuarioService.atualizarUsuario(usuarioModel);
+        UsuarioModel usuarioModelLocal = this.usuarioService.atualizar(usuarioModel);
         if (usuarioModelLocal == null) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Erro ao atualizar! " + usuarioModel.toString());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Erro ao atualizar! " + usuarioModel);
         }
         return ResponseEntity.status(HttpStatus.OK).body(usuarioModelLocal);
     }
 
     @GetMapping(value = "/buscarUserName")
     @ResponseBody
-    public ResponseEntity<?> buscarUserName(@RequestBody @NotNull UsuarioModel usuarioModel) {
+    public ResponseEntity<Object> buscarUserName(@RequestBody @NotNull UsuarioModel usuarioModel) {
 
         List<UsuarioModel> listaUsuarioLocalModel = usuarioService.buscarNomeUsuario(usuarioModel.getNome().trim().toUpperCase());
         if (listaUsuarioLocalModel.isEmpty()) {
-            return new ResponseEntity<String>("Não Localizado! " + usuarioModel.getNome(), HttpStatus.NO_CONTENT);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Não Localizado! " + usuarioModel.getNome());
         }
-        return new ResponseEntity<List<UsuarioModel>>(listaUsuarioLocalModel, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(listaUsuarioLocalModel);
     }
 
 }

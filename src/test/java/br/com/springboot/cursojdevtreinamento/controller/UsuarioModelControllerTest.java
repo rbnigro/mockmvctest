@@ -41,7 +41,7 @@ class UsuarioModelControllerTest {
     @MockBean
     private UsuarioService usuarioService;
 
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     // nao tinha mada
     @Mock
@@ -142,7 +142,7 @@ class UsuarioModelControllerTest {
 
     @Test
     void deveRetonarSucesso_QuandoApagarUsuario() {
-        Mockito.when(this.usuarioService.buscarIdUsuario(1L)).thenReturn(Optional.ofNullable(this.usuarioModelLocal));
+        Mockito.when(this.usuarioService.buscarId(1L)).thenReturn(Optional.ofNullable(this.usuarioModelLocal));
 
         RestAssured
                 .given()
@@ -157,7 +157,7 @@ class UsuarioModelControllerTest {
 
     @Test
     void deveRetonarErro_QuandoApagarUsuario() {
-        Mockito.when(this.usuarioService.buscarIdUsuario(1L))
+        Mockito.when(this.usuarioService.buscarId(1L))
                 .thenReturn(Optional.ofNullable(this.usuarioModelLocal));
 
         RestAssured
@@ -174,7 +174,7 @@ class UsuarioModelControllerTest {
 
     @Test
     void deveRetornarSucesso_QuandoBuscarIdUsuario() {
-        Mockito.when(this.usuarioService.buscarIdUsuario(14L))
+        Mockito.when(this.usuarioService.buscarId(14L))
                 .thenReturn(Optional.ofNullable(this.usuarioModelLocal));
 
         RestAssuredMockMvc.given()
@@ -189,7 +189,7 @@ class UsuarioModelControllerTest {
 
     @Test
     void deveRetornarErro_QuandoBuscarIdUsuario() {
-        Mockito.when(this.usuarioService.buscarIdUsuario(14L))
+        Mockito.when(this.usuarioService.buscarId(14L))
                 .thenReturn(Optional.ofNullable(this.usuarioModelLocal));
 
         RestAssuredMockMvc.given()

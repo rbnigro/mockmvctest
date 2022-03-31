@@ -1,13 +1,15 @@
 package br.com.springboot.cursojdevtreinamento.model;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "usuario")
-@SequenceGenerator(name = "seqUsuario", sequenceName = "seqUsuario", allocationSize = 1, initialValue = 1)
+@Table(name = "table_usuario")
+@SequenceGenerator(name = "seqUsuario", sequenceName = "seqUsuario", allocationSize = 1)
 public class UsuarioModel implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id

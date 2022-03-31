@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "venda")
-@SequenceGenerator(name = "seqVenda", sequenceName = "seqVenda", allocationSize = 1, initialValue = 1)
+@Table(name = "table_venda")
+@SequenceGenerator(name = "seqVenda", sequenceName = "seqVenda", allocationSize = 1)
 public class VendaModel {
 
     private static final long serialVersionUID = 1L;
@@ -17,11 +17,11 @@ public class VendaModel {
     @Column(nullable = false)
     private Long idUsuario;
 
-    @Column(nullable = false)
     private LocalDateTime dataVenda;
 
-    @Column(nullable = false)
     private Double totalVenda;
+
+    public char cancelado;
 
     public Long getIdVenda() {
         return idVenda;
@@ -54,8 +54,12 @@ public class VendaModel {
     public void setTotalVenda(Double totalVenda) {
         this.totalVenda = totalVenda;
     }
-// TODO configuração de data https://youtu.be/LXRU-Z36GEU?t=6550
-    // conversao de DTO para model
-    // vendamodel.setDataVena(LocalDateTime.now(ZoneId.of("UTC"))); DTO nao tem data
-    // return
+
+    public char getCancelado() {
+        return cancelado;
+    }
+
+    public void setCancelado(char cancelado) {
+        this.cancelado = cancelado;
+    }
 }

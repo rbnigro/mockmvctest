@@ -1,14 +1,16 @@
 package br.com.springboot.cursojdevtreinamento.model;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "mercadoria")
-@SequenceGenerator(name = "seqMercadoria", sequenceName = "seqMercadoria", allocationSize = 1, initialValue = 1)
+@Table(name = "table_mercadoria")
+@SequenceGenerator(name = "seqMercadoria", sequenceName = "seqMercadoria", allocationSize = 1)
 public class MercadoriaModel implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
