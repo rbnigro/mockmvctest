@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +27,7 @@ public class UsuarioController {
     @GetMapping(value = "/listaTodos")
     @ResponseBody
     public ResponseEntity<List<UsuarioModel>> listar() {
-        List<UsuarioModel> usuariosLocal = this.usuarioService.listarUsuarios();
+        List<UsuarioModel> usuariosLocal = this.usuarioService.listaTodos();
 
         if (usuariosLocal == null) {
             return ResponseEntity.noContent().build();
@@ -38,7 +37,7 @@ public class UsuarioController {
 
     @PostMapping(value = "/salvar")
     @ResponseBody
-    public ResponseEntity<Object> salvarUsuario(@RequestBody @Valid @NotNull UsuarioDTO usuarioDTO) {
+    public ResponseEntity<Object> salvar(@RequestBody @Valid @NotNull UsuarioDTO usuarioDTO) {
 
         if (usuarioService.existsByNome(usuarioDTO.getNome())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito nome já existente: " + usuarioDTO.getNome());
@@ -49,23 +48,23 @@ public class UsuarioController {
         }
             var usuarioModel = new UsuarioModel();
             BeanUtils.copyProperties(usuarioDTO, usuarioModel);
-            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.salvarUsuario(usuarioModel));
+            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.salvar(usuarioModel));
     }
 
     @DeleteMapping(value = "/apagar")
     @ResponseBody
     public ResponseEntity<String> apagar(@RequestParam(name = "id", required = true) Long id) {
-        HttpStatus httpStatusLocal = this.usuarioService.deletarUsuario(id);
+        HttpStatus httpStatusLocal = this.usuarioService.apagar(id);
 
         if (httpStatusLocal == HttpStatus.NO_CONTENT) {
             return new ResponseEntity<String>("Não localizado para apagar! " + id, httpStatusLocal);
         }
-        return new ResponseEntity<String>("User Deleted Successful", httpStatusLocal);
+        return new ResponseEntity<String>("Apagado com Sucesso", httpStatusLocal);
     }
 
-    @GetMapping(value = "/buscarUsuarioId")
+    @GetMapping(value = "/buscarId")
     @ResponseBody
-    public ResponseEntity<Object> buscarUsuarioId(@RequestBody @Valid UsuarioModel usuarioModel) {
+    public ResponseEntity<Object> buscarId(@RequestBody @Valid UsuarioModel usuarioModel) {
         Optional<UsuarioModel> usuarioLocal = this.usuarioService.buscarIdUsuario(usuarioModel.getIdUsuario());
 
         if (!usuarioLocal.isPresent()) {
@@ -76,13 +75,13 @@ public class UsuarioController {
 
     @PutMapping(value = "/atualizar")
     @ResponseBody
-    public ResponseEntity<?> atualizar(@RequestBody UsuarioModel usuarioModel) {
+    public ResponseEntity<Object> atualizar(@RequestBody UsuarioModel usuarioModel) {
 
         UsuarioModel usuarioModelLocal = this.usuarioService.atualizarUsuario(usuarioModel);
         if (usuarioModelLocal == null) {
-            return new ResponseEntity<String>("Erro ao atualizar! " + usuarioModel.getIdUsuario(), HttpStatus.NO_CONTENT);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Erro ao atualizar! " + usuarioModel.toString());
         }
-        return new ResponseEntity<UsuarioModel>(usuarioModelLocal, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioModelLocal);
     }
 
     @GetMapping(value = "/buscarUserName")

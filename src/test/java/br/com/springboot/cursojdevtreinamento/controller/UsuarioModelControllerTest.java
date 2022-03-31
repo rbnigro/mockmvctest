@@ -63,7 +63,7 @@ class UsuarioModelControllerTest {
         ArrayList<UsuarioModel> listUsuarioModel = new ArrayList<>();
         listUsuarioModel.add(this.usuarioModelLocal);
 
-        Mockito.when(this.usuarioService.listarUsuarios())
+        Mockito.when(this.usuarioService.listaTodos())
                 .thenReturn(listUsuarioModel);
 
         RestAssuredMockMvc.given()
@@ -78,7 +78,7 @@ class UsuarioModelControllerTest {
 
     @Test
     void deveRetornarNaoEncontrado_QuandoBuscarListaUsuario() {
-        Mockito.when(this.usuarioService.listarUsuarios())
+        Mockito.when(this.usuarioService.listaTodos())
                 .thenReturn(null);
 
         RestAssuredMockMvc.given()
@@ -92,7 +92,7 @@ class UsuarioModelControllerTest {
     @Test
     void deveRetornarSucesso_QuandoCriarUsuario() throws Exception {
 
-        Mockito.when(usuarioService.salvarUsuario(ArgumentMatchers.any())).thenReturn(this.usuarioModelLocal);
+        Mockito.when(usuarioService.salvar(ArgumentMatchers.any())).thenReturn(this.usuarioModelLocal);
       //  Mockito.when(usuarioService.validarInputJson(ArgumentMatchers.any())).thenReturn(true);
 
         String json = mapper.writeValueAsString(this.usuarioModelLocal);
@@ -105,7 +105,7 @@ class UsuarioModelControllerTest {
 
     @Test
     void deveRetornarSucesso_QuandoCriarUsuarioTWO() throws Exception {
-        Mockito.when(this.usuarioService.salvarUsuario(this.usuarioModelLocal)).thenReturn(this.usuarioModelLocal);
+        Mockito.when(this.usuarioService.salvar(this.usuarioModelLocal)).thenReturn(this.usuarioModelLocal);
         Mockito.when(this.usuarioService.validarInputJson(this.usuarioModelLocal)).thenReturn(true);
 
         JSONObject json1 = new JSONObject();

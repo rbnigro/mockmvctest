@@ -21,24 +21,23 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    public List<UsuarioModel> listarUsuarios() {
-        List<UsuarioModel> usuariosLocal = usuarioRepository.findAll();
-        return usuariosLocal;
+    public List<UsuarioModel> listaTodos() {
+        return usuarioRepository.findAll();
     }
 
     @Transactional
-    public UsuarioModel salvarUsuario(UsuarioModel usuarioModel) {
+    public UsuarioModel salvar(UsuarioModel usuarioModel) {
         return usuarioRepository.save(usuarioModel);
     }
 
     @Transactional
-    public HttpStatus deletarUsuario(Long idUsuario) {
-        Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(idUsuario);
+    public HttpStatus apagar(Long id) {
+        Optional<UsuarioModel> usuarioLocal = usuarioRepository.findById(id);
 
         if (!usuarioLocal.isPresent()) {
             return HttpStatus.NO_CONTENT;
         }
-        usuarioRepository.deleteById(idUsuario);
+        usuarioRepository.deleteById(id);
         return HttpStatus.OK;
     }
 
@@ -58,8 +57,7 @@ public class UsuarioService {
         if ((usuarioModel.getIdUsuario() == null) || (!usuarioLocal.isPresent())) {
             return null;
         }
-        UsuarioModel usuarioModelRetorno = usuarioRepository.saveAndFlush(usuarioModel);
-        return usuarioModelRetorno;
+        return usuarioRepository.saveAndFlush(usuarioModel);
     }
 
     public List<UsuarioModel> buscarNomeUsuario(@NotNull String nomeUsuario) {

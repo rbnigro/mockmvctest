@@ -41,7 +41,7 @@ public class MercadoriaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(mercadoriaService.salvarMercadoria(mercadoriaModel));
     }
 
-    @GetMapping(value = "/buscarMercadoriaId")
+    @GetMapping(value = "/buscarId")
     @ResponseBody
     public ResponseEntity<Object> buscarMercadoriaId(@RequestBody @NotNull MercadoriaModel mercadoriaModel) {
         Optional<MercadoriaModel> mercadoriaLocal = this.mercadoriaService.findById(mercadoriaModel.getIdMercadoria());
@@ -50,5 +50,16 @@ public class MercadoriaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não localizado! " + mercadoriaModel.getIdMercadoria());
         }
         return ResponseEntity.status(HttpStatus.OK).body(mercadoriaLocal.get());
+    }
+
+    @DeleteMapping(value = "/apagar")
+    public ResponseEntity<String> apagar(@RequestParam(name = "id", required = true) Long id) {
+        HttpStatus httpStatusLocal = this.mercadoriaService.apagar(id);
+
+        if (httpStatusLocal == HttpStatus.NO_CONTENT) { // NO_CONTENT -> Cancela o Body
+            return new ResponseEntity<String>("Não localizado para apagar! " + id, httpStatusLocal);
+        }
+
+        return new ResponseEntity<String>("Apagado com Sucesso", httpStatusLocal);
     }
 }
