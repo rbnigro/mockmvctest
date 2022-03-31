@@ -63,19 +63,17 @@ public class UsuarioService {
     public List<UsuarioModel> buscarNomeUsuario(@NotNull String nomeUsuario) {
         List<UsuarioModel> listaUsuarioLocalModel = usuarioRepository.buscarNomeUsuario(nomeUsuario.trim().toUpperCase());
 
-        if (listaUsuarioLocalModel.size() == 0) {
+        if (listaUsuarioLocalModel.isEmpty()) {
             return Collections.emptyList();
         }
         return listaUsuarioLocalModel;
     }
 
     public boolean validarInputJson(@NotNull UsuarioModel usuarioModel) {
-        // TODO preprar para remover com valid
         return  (usuarioModel.getNome() != null && usuarioModel.getIdade() != 0);
     }
 
     public boolean validarInputJson(@NotNull UsuarioDTO usuarioDTO) {
-        // TODO preprar para remover com valid
         return  (usuarioDTO.getNome() != null && usuarioDTO.getIdade() != 0);
     }
 

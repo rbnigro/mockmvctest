@@ -5,6 +5,10 @@ import br.com.springboot.cursojdevtreinamento.model.MercadoriaModel;
 import br.com.springboot.cursojdevtreinamento.service.MercadoriaService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +29,12 @@ public class MercadoriaController {
     }
 
     @GetMapping(value = "/listaTodos")
-    // TODO testar com retorno vazio
-    public ResponseEntity<List<MercadoriaModel>> getAllMercadoria() {
-        return ResponseEntity.status(HttpStatus.OK).body(mercadoriaService.findAll());
+    public ResponseEntity<Page<MercadoriaModel>> getAllMercadoria(@PageableDefault(page = 0, size = 10, sort = "descricao", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(mercadoriaService.findAll(pageable));
     }
 
     @PostMapping(value = "/salvar")
-    public ResponseEntity<Object>  salvarMercadoria(@RequestBody @Valid @NotNull MercadoriaDTO mercadoriaDTO) throws Exception {
+    public ResponseEntity<Object>  salvar(@RequestBody @Valid @NotNull MercadoriaDTO mercadoriaDTO) throws Exception {
         if (mercadoriaService.existsByDescricao(mercadoriaDTO.getDescricao())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito descrição já existente: " + mercadoriaDTO.getDescricao());
         }
@@ -43,7 +46,7 @@ public class MercadoriaController {
 
     @GetMapping(value = "/buscarId")
     @ResponseBody
-    public ResponseEntity<Object> buscarMercadoriaId(@RequestBody @NotNull MercadoriaModel mercadoriaModel) {
+    public ResponseEntity<Object> buscarId(@RequestBody @NotNull MercadoriaModel mercadoriaModel) {
         Optional<MercadoriaModel> mercadoriaLocal = this.mercadoriaService.findById(mercadoriaModel.getIdMercadoria());
 
         if (!mercadoriaLocal.isPresent()) {
@@ -53,13 +56,13 @@ public class MercadoriaController {
     }
 
     @DeleteMapping(value = "/apagar")
-    public ResponseEntity<String> apagar(@RequestParam(name = "id", required = true) Long id) {
+    public ResponseEntity<Object> apagar(@RequestParam(name = "id", required = true) Long id) {
         HttpStatus httpStatusLocal = this.mercadoriaService.apagar(id);
 
         if (httpStatusLocal == HttpStatus.NO_CONTENT) { // NO_CONTENT -> Cancela o Body
-            return new ResponseEntity<String>("Não localizado para apagar! " + id, httpStatusLocal);
+            return ResponseEntity.status(httpStatusLocal).body("Não localizado para apagar! " + id);
         }
 
-        return new ResponseEntity<String>("Apagado com Sucesso", httpStatusLocal);
+        return ResponseEntity.status(httpStatusLocal).body("Apagado com Sucesso");
     }
 }

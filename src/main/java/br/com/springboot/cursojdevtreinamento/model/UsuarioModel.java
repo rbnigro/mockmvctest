@@ -1,7 +1,5 @@
 package br.com.springboot.cursojdevtreinamento.model;
 
-import org.jetbrains.annotations.Nullable;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
