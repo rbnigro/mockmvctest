@@ -76,9 +76,7 @@ public class ItemVendaModel implements Serializable {
         return valorTotal;
     }
 
-    public void setValorTotal(BigDecimal valorTotal) {
-        this.valorTotal = new BigDecimal(this.getQuantidade()).multiply(this.getValorMercadoria());
-    }
+    public void setValorTotal(BigDecimal valorTotal) { this.valorTotal = valorTotal; }
 
     @Override
     public String toString() {

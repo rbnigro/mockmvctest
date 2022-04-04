@@ -20,7 +20,7 @@ public class MercadoriaService {
     }
 
     @Transactional
-    public MercadoriaModel salvarMercadoria(MercadoriaModel mercadoriaModel) {
+    public MercadoriaModel salvar(MercadoriaModel mercadoriaModel) {
         return mercadoriaRepository.save(mercadoriaModel);
     }
 

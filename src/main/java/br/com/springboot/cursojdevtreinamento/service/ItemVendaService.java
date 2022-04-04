@@ -4,6 +4,7 @@ import br.com.springboot.cursojdevtreinamento.model.ItemVendaModel;
 import br.com.springboot.cursojdevtreinamento.repository.ItemVendaRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -17,5 +18,10 @@ public class ItemVendaService {
 
     public List<ItemVendaModel> listaTodos() {
         return itemVendaRepository.findAll();
+    }
+
+    @Transactional
+    public ItemVendaModel salvar(ItemVendaModel itemVendaModel) {
+        return itemVendaRepository.save(itemVendaModel);
     }
 }

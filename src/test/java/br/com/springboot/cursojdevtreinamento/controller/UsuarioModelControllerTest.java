@@ -1,8 +1,10 @@
 package br.com.springboot.cursojdevtreinamento.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import br.com.springboot.cursojdevtreinamento.dto.UsuarioDTO;
 import br.com.springboot.cursojdevtreinamento.model.UsuarioModel;
 import br.com.springboot.cursojdevtreinamento.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +12,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.hamcrest.Matchers;
-import org.json.JSONObject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -22,6 +24,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -42,10 +46,14 @@ class UsuarioModelControllerTest {
     private UsuarioService usuarioService;
 
     private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ArrayList<UsuarioModel> listUsuarioModel = new ArrayList<>();
 
     // nao tinha mada
     @Mock
     private UsuarioModel usuarioModelLocal;
+
+    @Mock
+    private UsuarioDTO usuarioDTOLocal;
 
     @BeforeEach
     public void setup() { // antes de cada teste
@@ -54,18 +62,39 @@ class UsuarioModelControllerTest {
         this.usuarioModelLocal.setNome("Sussu");
         this.usuarioModelLocal.setIdade(50);
 
+        this.listUsuarioModel.add(this.usuarioModelLocal);
+
         RestAssuredMockMvc.standaloneSetup(this.usuarioController);
+
+        this.usuarioDTOLocal = new UsuarioDTO();
+        this.usuarioDTOLocal.setNome(this.usuarioModelLocal.getNome());
+        this.usuarioDTOLocal.setIdade(this.usuarioModelLocal.getIdade());
+    }
+
+    @AfterEach
+    public void cleanSetup() {
+        this.usuarioModelLocal = null;
+        this.usuarioDTOLocal = null;
+
+        this.listUsuarioModel.clear();
     }
 
     @Test
-    void deveRetornarSucesso_QuandoBuscarListaUsuario() {
+    void deveRetornarSucesso_QuandoBuscarListaUsuarioMockito() throws Exception {
 
-        ArrayList<UsuarioModel> listUsuarioModel = new ArrayList<>();
-        listUsuarioModel.add(this.usuarioModelLocal);
-
-        Mockito.when(this.usuarioService.listaTodos())
+        Mockito
+                .when(this.usuarioService.listaTodos())
                 .thenReturn(listUsuarioModel);
 
+        mockMvc
+                .perform(get("/api/usuarios/listaTodos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", Matchers.hasSize(1)))
+                .andExpect(jsonPath("$[0].nome", Matchers.equalTo(this.usuarioModelLocal.getNome())));
+    }
+
+        @Test
+        void deveRetornarSucesso_QuandoBuscarListaUsuario() {
         RestAssuredMockMvc.given()
                 .accept(ContentType.JSON)
                 .log().all()
@@ -91,39 +120,17 @@ class UsuarioModelControllerTest {
 
     @Test
     void deveRetornarSucesso_QuandoCriarUsuario() throws Exception {
-
-        Mockito.when(usuarioService.salvar(ArgumentMatchers.any())).thenReturn(this.usuarioModelLocal);
-      //  Mockito.when(usuarioService.validarInputJson(ArgumentMatchers.any())).thenReturn(true);
-
-        String json = mapper.writeValueAsString(this.usuarioModelLocal);
-        mockMvc.perform(post("/api/usuarios/salvar").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
-                        .content(json).accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-                //  .andExpect(jsonPath("$.id", Matchers.equalTo(this.usuarioModelLocal.getId())))
-                .andExpect(jsonPath("$.nome", Matchers.equalTo(this.usuarioModelLocal.getNome())))
-                .andExpect(jsonPath("$.idade", Matchers.equalTo(this.usuarioModelLocal.getIdade())));
-    }
-
-    @Test
-    void deveRetornarSucesso_QuandoCriarUsuarioTWO() throws Exception {
-        Mockito.when(this.usuarioService.salvar(this.usuarioModelLocal)).thenReturn(this.usuarioModelLocal);
-        Mockito.when(this.usuarioService.validarInputJson(this.usuarioModelLocal)).thenReturn(true);
-
-        JSONObject json1 = new JSONObject();
-        json1.put("nome", this.usuarioModelLocal.getNome());
-        json1.put("idade", this.usuarioModelLocal.getIdade());
-
-        RestAssuredMockMvc
-                .given()
-                .header("Content-Type", "application/json")
-                //.accept(ContentType.JSON)
-                .contentType("application/json")
-                .body(json1.toString())
-                .when()
-                .post("/api/usuarios/salvar");
-               // .then()
-               // .log().all()
-               // .assertThat().body("message", equalTo("Message accepted"));
-               // .statusCode(HttpStatus.CREATED.value());
+        Mockito.when(usuarioService.existsByNome(usuarioDTOLocal.getNome())).thenReturn(false);
+        Mockito.when(usuarioService.validarInputJson(usuarioDTOLocal)).thenReturn(true);
+        Mockito.when(usuarioService.salvar(ArgumentMatchers.any())).thenReturn(usuarioModelLocal);
+        String json = mapper.writeValueAsString(usuarioModelLocal);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/usuarios/salvar")
+                 .contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+                .content(json).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+              //  .andExpect(jsonPath("$.idUsuario", Matchers.equalTo(1L)))
+                .andExpect(jsonPath("$.nome", Matchers.equalTo(usuarioModelLocal.getNome())))
+                .andExpect(jsonPath("$.idade", Matchers.equalTo(usuarioModelLocal.getIdade())));
     }
 
     @Test
@@ -180,9 +187,9 @@ class UsuarioModelControllerTest {
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .log().all()
-                .body("{\"id\": 14}")
+                .body("{\"idUsuario\": 14}")
                 .when()
-                .get("/api/usuarios/buscarUserId")
+                .get("/api/usuarios/buscarId")
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -201,6 +208,19 @@ class UsuarioModelControllerTest {
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    public void deveRetornarSucesso_QuandoAtualizarUsuario() throws Exception {
+        Mockito.when(this.usuarioService.atualizar(ArgumentMatchers.any())).thenReturn(usuarioModelLocal);
+
+        String json = mapper.writeValueAsString(usuarioModelLocal);
+        mockMvc.perform(put("/api/usuarios/atualizar").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
+                .content(json).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+               // .andExpect(jsonPath("$.idUsuario", Matchers.equalTo(usuarioModelLocal.getIdUsuario())))
+                .andExpect(jsonPath("$.nome", Matchers.equalTo(usuarioModelLocal.getNome())))
+                .andExpect(jsonPath("$.idade", Matchers.equalTo(usuarioModelLocal.getIdade())));
     }
 
 }

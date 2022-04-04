@@ -33,14 +33,14 @@ public class MercadoriaController {
     }
 
     @PostMapping(value = "/salvar")
-    public ResponseEntity<Object>  salvar(@RequestBody @Valid @NotNull MercadoriaDTO mercadoriaDTO) {
+    public ResponseEntity<Object> salvar(@RequestBody @Valid @NotNull MercadoriaDTO mercadoriaDTO) {
         if (mercadoriaService.existsByDescricao(mercadoriaDTO.getDescricao())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito descrição já existente: " + mercadoriaDTO.getDescricao());
         }
 
         var mercadoriaModel = new MercadoriaModel();
         BeanUtils.copyProperties(mercadoriaDTO, mercadoriaModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mercadoriaService.salvarMercadoria(mercadoriaModel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mercadoriaService.salvar(mercadoriaModel));
     }
 
     @GetMapping(value = "/buscarId")

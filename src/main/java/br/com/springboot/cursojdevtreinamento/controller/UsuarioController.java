@@ -39,7 +39,7 @@ public class UsuarioController {
     @ResponseBody
     public ResponseEntity<Object> salvar(@RequestBody @Valid @NotNull UsuarioDTO usuarioDTO) {
 
-        if (usuarioService.existsByNome(usuarioDTO.getNome())) {
+        if (this.usuarioService.existsByNome(usuarioDTO.getNome())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflito nome já existente: " + usuarioDTO.getNome());
         }
 
@@ -68,7 +68,7 @@ public class UsuarioController {
     public ResponseEntity<Object> buscarId(@RequestBody @Valid UsuarioModel usuarioModel) {
         Optional<UsuarioModel> usuarioLocal = this.usuarioService.buscarId(usuarioModel.getIdUsuario());
 
-        if (!usuarioLocal.isEmpty()) {
+        if (usuarioLocal.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não localizado! " + usuarioModel.getIdUsuario());
         }
         return ResponseEntity.status(HttpStatus.OK).body(usuarioLocal.get());

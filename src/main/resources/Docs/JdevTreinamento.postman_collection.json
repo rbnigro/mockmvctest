@@ -1,0 +1,465 @@
+{
+	"info": {
+		"_postman_id": "4f05ea12-5809-47fc-8e97-24094c163d2a",
+		"name": "JdevTreinamento",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Usuario",
+			"item": [
+				{
+					"name": "buscarId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idUsuario\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/cursojdevtreinamento/api/usuarios/buscarId",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"usuarios",
+								"buscarId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listaTodos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/cursojdevtreinamento/api/usuarios/listaTodos",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"usuarios",
+								"listaTodos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "salvar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Sussu\",\r\n    \"idade\": 50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/cursojdevtreinamento/api/usuarios/salvar",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"usuarios",
+								"salvar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "apagar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/cursojdevtreinamento/api/usuarios/apagar",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"usuarios",
+								"apagar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "atualizar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idUsuario\": 1,\r\n    \"nome\": \"Ronney b Nigro\",\r\n    \"idade\": 40\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/cursojdevtreinamento/api/usuarios/atualizar",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"usuarios",
+								"atualizar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscarUserName",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"zaz\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/cursojdevtreinamento/api/usuarios/buscarUserName",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"usuarios",
+								"buscarUserName"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Mercadoria",
+			"item": [
+				{
+					"name": "buscarId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"idMercadoria\": 30\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/cursojdevtreinamento/api/mercadorias/buscarId",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"mercadorias",
+								"buscarId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listaTodos paginado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/cursojdevtreinamento/api/mercadorias/listaTodos?page=1&size=2&sort=valor,DESC",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"mercadorias",
+								"listaTodos"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "2"
+								},
+								{
+									"key": "sort",
+									"value": "valor,DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "salvar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descricao\": \"sofá grande\",\r\n    \"valor\": 2000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/cursojdevtreinamento/api/mercadorias/salvar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"mercadorias",
+								"salvar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "apagar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id",
+									"value": "4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/cursojdevtreinamento/api/mercadorias/apagar",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"mercadorias",
+								"apagar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listaTodos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/cursojdevtreinamento/api/mercadorias/listaTodos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"mercadorias",
+								"listaTodos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Venda",
+			"item": [
+				{
+					"name": "salvar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idUsuario\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/cursojdevtreinamento/api/vendas/salvar",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"vendas",
+								"salvar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ItemVenda",
+			"item": [
+				{
+					"name": "listaTodos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/cursojdevtreinamento/api/itemvenda/listaTodos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"itemvenda",
+								"listaTodos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "salvar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idVenda\": 1,\r\n    \"idMercadoria\": 1,\r\n    \"quantidade\": 2,\r\n    \"valorMercadoria\": 30\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/cursojdevtreinamento/api/itemvenda/salvar",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cursojdevtreinamento",
+								"api",
+								"itemvenda",
+								"salvar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PortalVendas",
+			"item": []
+		}
+	]
+}
